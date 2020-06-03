@@ -1,5 +1,6 @@
 # depslib dependency file v1.0
-1591202983 source:c:\users\ярослав\downloads\university\computer science\c++\neuron\main.cpp
+1591203918 source:c:\users\ярослав\downloads\university\computer science\c++\neuron\main.cpp
 	<iostream>
 	<string>
+	<stdlib.h>
 

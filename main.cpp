@@ -1,10 +1,12 @@
 #include <iostream>
 #include <string>
+#include <stdlib.h>
 using namespace std;
 
-int number1;
-int number2 = 1;
-int number3 = 2;
+unsigned int number1 = 0; // отдельную информацию об ошибках выводить не стал - при неправильном вводе
+unsigned int number2 = 1; // программа просто закроется
+unsigned int number3 = 2;
+
 class Neuron {
 public:
     int Size;
