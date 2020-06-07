@@ -1,68 +1,97 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
+#include <cmath>
 using namespace std;
 
-unsigned int number1 = 0; // отдельную информацию об ошибках выводить не стал - при неправильном вводе
-unsigned int number2 = 1; // программа просто закроется
-unsigned int number3 = 2;
+double Foo(double x){ // функция активации
+    x = -x;
+    return (1/(1 + pow(2.7, x)));
+}
+
 
 class Neuron {
 public:
-    int Size;
-    float *data;
-    Neuron(int numb, float (*func)(float *data, int number)){ // конструктор
-        this->Size = numb;
-        this->data = new float[numb];
-        cout << "Enter 'x': " << endl;
-        for (int i = 0; i < numb; i++){
-            cin >> data[i];
-        }
-        func(data, numb);
-        //cout << "Construction" << endl;
+    double output;
+    int numb; // количество входов
+    double *w; // весовой коэффициент
+    double *data;
+    double sum = 0.0;
+    void changeWeight();
+    double outputValue(double (*func)(double));
+    void Set();
+    Neuron(int Size, double (*func)(double)){ // конструктор
+        this->numb = Size;
+        this->data = new double[numb]; // значения
+        this->w = new double[numb]; // весовые коэфф
     };
 
-    Neuron(const Neuron &other){                // конструктор копирования
-        this->data = new float[other.Size];
-        cout << "Enter 'x': " << endl;
-        for (int i = 0; i < other.Size; i++){
-            cin >> data[i];
-        }
+    Neuron(const Neuron &other){    // конструктор копирования
+        this->numb = other.numb;
+        this->data = new double[other.numb];
+        this->w = new double[other.numb];
     };
 
     Neuron & operator = (const Neuron &other){ // перегрузка оператора
-        this->Size = other.Size;
-        this->data = new float[other.Size];
-        cout << "Enter 'x': " << endl;
-        for (int i = 0; i < other.Size; i++){
-            cin >> data[i];
-        }
+        this->numb = other.numb;
+        this->data = new double[other.numb];
+        this->w = new double[other.numb];
         return *this;
     }
 
     ~Neuron(){ // деструктор
         delete[] data;
+        delete[] w;
         //cout << "Destruction" << endl;
     };
 };
 
-float Foo(float *data, int number){ // функция активации
-    float sum;
-    for (int i = 0; i < number; i++){ // я не знаю, нужно ли задавать функцию пользователю, поэтому
-        sum += data[i];               // в этом примере мы рассматриваем функцию y = x;
+void Neuron::Set(){
+    cout << "Enter main values" << endl;
+    for (int i = 0; i < numb; i++){
+        cin >> data[i];
     }
-    cout << sum << endl;
-    return 0;
+    cout << "Enter w values" << endl;
+    for (int i = 0; i < numb; i++){
+        cin >> w[i];
+    }
+    cout << "Finished" << endl;
 }
+
+double Neuron::outputValue(double (*func)(double)){     // функция для вывода
+    double sumf = 0.0;
+    for (unsigned int i = 0; i < numb; i++){
+        sumf += data[i] * w[i];
+    }
+    output = func(sumf);
+    return output;
+}
+
+void Neuron::changeWeight(){    // функция для изменения весовых коэф
+    cout << "Enter w values" << endl;
+    for (int i = 0; i < numb; i++){
+        cin >> w[i];
+    }
+    cout << "Finished" << endl;
+}
+
 
 int main()
 {
-    cout << "Enter amount of 'x': " << endl;
-    //int (*pointer)() = Foo;
-    cin >> number1;
-    Neuron a(number1, Foo);
-    Neuron b(number2, Foo);
-    Neuron c(number3, Foo);
-    b = c = a;
+    int inputNumb;
+    cout << "Enter amount of input: " << endl; //const
+    cin >> inputNumb;
+    Neuron testingNeuron(inputNumb, Foo);                   //проверка работы функций
+    testingNeuron.Set();
+    cout << testingNeuron.outputValue(Foo) << endl;
+    Neuron a(3, Foo);                                   // проверка копирования и перегрузки
+    a = testingNeuron;
+    cout << a.numb << endl;
+    Neuron n(5, Foo);
+    a = n = testingNeuron;
+    cout << n.numb << endl;
+    n.changeWeight();
+    a.Set();
+    cout << a.outputValue(Foo) << endl;
     return 0;
 }
